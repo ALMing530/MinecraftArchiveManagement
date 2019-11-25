@@ -1,0 +1,9 @@
+.second{
+    -fx-background-radius: 0 3 3 0;
+}
+.first{
+    -fx-background-radius: 3 0 0 3;
+}
+.main{
+    -fx-background-radius: 5 5 5 5;
+}

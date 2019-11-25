@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.202" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wxm.viewctrl.MainCtrl">
+    <center>
+        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="控制台:">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets left="20.0" top="5.0" />
+                    </VBox.margin>
+                </Label>
+                <TextArea fx:id="console" prefHeight="200.0" prefWidth="200.0">
+                    <opaqueInsets>
+                        <Insets left="10.0" right="10.0" />
+                    </opaqueInsets>
+                    <VBox.margin>
+                        <Insets left="20.0" right="20.0" top="5.0" />
+                    </VBox.margin>
+                </TextArea>
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Button fx:id="syncToServerbtn" mnemonicParsing="false" onAction="#syncToServer" text="同步至服务器" />
+                        <Button fx:id="syncFromServerbtn" mnemonicParsing="false" onAction="#syncFromServer" text="从服务器同步" GridPane.columnIndex="1" />
+                    </children>
+                </GridPane>
+            </children>
+        </VBox>
+    </center>
+   <top>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="83.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="322.0" minWidth="10.0" prefWidth="320.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="服务器：">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </Label>
+            <Label text="存档目录：" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </Label>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <children>
+                  <TextField fx:id="serverIp" prefWidth="175.0" styleClass="first" stylesheets="@../css/main.css" />
+                  <Label prefWidth="1.0" text=":" />
+                  <TextField fx:id="serverPort" prefWidth="59.0" styleClass="second" stylesheets="@../css/main.css" />
+                  <Button fx:id="connectbtn" mnemonicParsing="false" onAction="#connectToServer" prefWidth="55.0" text="连接">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <TextField fx:id="archiveDir" prefWidth="232.0" styleClass="first" stylesheets="@../css/main.css" />
+                  <Button fx:id="choosebtn" mnemonicParsing="false" onAction="#chooseArchive" prefWidth="65.0" styleClass="second" stylesheets="@../css/main.css" text="选择文件" />
+               </children>
+            </HBox>
+         </children>
+         <BorderPane.margin>
+            <Insets top="15.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </top>
+</BorderPane>
