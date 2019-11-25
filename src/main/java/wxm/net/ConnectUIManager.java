@@ -9,7 +9,7 @@ import java.net.Socket;
 /**
  *
  * 功能描述:
- * @Description 连接UI管理器，管理不同连接状态的UI
+ * @Description 连接UI管理器，管理不同连接状态的UI,已废弃
  * @ClassName ConnectUIManager
  * @auther: ALMing
  * @date: 2019/11/25 11:28
