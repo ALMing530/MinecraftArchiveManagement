@@ -19,11 +19,11 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipUtil {
     private long fileSize;
-    public File zip(File file){
+    public static File zip(File file,String destDir){
         File relative = new File(".");
-        String zipDir = relative.getAbsoluteFile().getParent() + File.separator + "zip/";
+//        String zipDir = relative.getAbsoluteFile().getParent() + File.separator + "zip/";
         String filename = file.getName().split("\\.")[0];
-        File zip = new File(zipDir + filename + ".zip");
+        File zip = new File(destDir + filename + ".zip");
         if (!zip.getParentFile().exists()) {
             zip.getParentFile().mkdirs();
         }
@@ -37,19 +37,18 @@ public class ZipUtil {
         }
         return zip;
     }
-    public File unZip(File file){
-        String distPath = getProjectPath()+File.separator;
+    public static File unZip(File srcFile,String destDir){
         InputStream inputStream =null;
         try{
-            ZipFile zipFile = new ZipFile(file);
+            ZipFile zipFile = new ZipFile(srcFile);
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()){
                 ZipEntry zipEntry = entries.nextElement();
                 if(zipEntry.isDirectory()){
-                    File dir = new File(distPath+zipEntry.getName());
+                    File dir = new File(destDir+zipEntry.getName());
                     dir.mkdirs();
                 }else {
-                    File childFile = new File(distPath+zipEntry.getName());
+                    File childFile = new File(destDir+zipEntry.getName());
                     File parentFile = childFile.getParentFile();
                     if(!parentFile.exists()){
                         parentFile.mkdirs();
@@ -72,7 +71,7 @@ public class ZipUtil {
         return null;
     }
 
-    private void compress(File file,ZipOutputStream zipOutputStream,String pathName) throws IOException {
+    private static void compress(File file,ZipOutputStream zipOutputStream,String pathName) throws IOException {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if(files.length==0){
@@ -133,7 +132,7 @@ public class ZipUtil {
 //        }
 //        return fileSize;
 //    }
-    private String getProjectPath(){
+    private static String getProjectPath(){
         File file = new File(".");
         return file.getAbsoluteFile().getParent();
     }
