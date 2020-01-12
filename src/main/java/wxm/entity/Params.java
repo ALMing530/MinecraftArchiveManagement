@@ -10,12 +10,12 @@ public class Params {
         params.put(name,value);
         return this;
     }
-    public byte[] generate(){
+    public String generate(){
         if(params.isEmpty()){
             throw new RuntimeException("参数未初始化");
         }
         String string = JSON.toJSONString(params);
         System.out.println(string);
-        return string.getBytes();
+        return string;
     }
 }

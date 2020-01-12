@@ -13,7 +13,6 @@ import javafx.util.Pair;
 import wxm.file.FileService;
 import wxm.net.BIOUploader;
 import wxm.net.NIOUploader;
-import wxm.net.ConnectUIManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,13 +78,14 @@ public class MainCtrl implements Controller {
         dirTooltip = new Tooltip();
         bioUploader = new BIOUploader();
         nioUploader = new NIOUploader();
-        fileService = new FileService(bioUploader);
-        serverIp.setText("alming.cn");
+        fileService = new FileService(bioUploader,new Console(this.console));
+        serverIp.setText("127.0.0.1");
         serverPort.setText("53055");
         String currentArchivePath = file.getAbsolutePath();
         dirTooltip.setText(currentArchivePath);
         archiveDir.setTooltip(dirTooltip);
         archiveDir.setText(currentArchivePath);
+        console.setWrapText(true);
         register();
     }
 
@@ -155,10 +155,14 @@ public class MainCtrl implements Controller {
             new Thread(new Task() {
                 @Override
                 protected Object call() throws Exception {
-                    if (!bioUploader.isClosed() && globalFile != null) {
-                        fileService.send(globalFile);
+                    try {
+                        if (!bioUploader.isClosed() && globalFile != null) {
+                            fileService.send(globalFile);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    return null;
+                        return null;
                 }
             }).start();
         } else {

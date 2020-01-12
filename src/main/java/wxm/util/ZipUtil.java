@@ -1,4 +1,4 @@
-package wxm.file;
+package wxm.util;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -19,11 +19,17 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipUtil {
     private long fileSize;
-    public static File zip(File file,String destDir){
+
+    /**
+     * 压缩文件，压缩后存放在项目同目录下/zip/文件明.zip
+     * @param file
+     * @return
+     */
+    public static File zip(File file){
         File relative = new File(".");
-//        String zipDir = relative.getAbsoluteFile().getParent() + File.separator + "zip/";
+        String zipDir = relative.getAbsoluteFile().getParent() + File.separator + "zip/";
         String filename = file.getName().split("\\.")[0];
-        File zip = new File(destDir + filename + ".zip");
+        File zip = new File(zipDir + filename + ".zip");
         if (!zip.getParentFile().exists()) {
             zip.getParentFile().mkdirs();
         }
@@ -37,7 +43,13 @@ public class ZipUtil {
         }
         return zip;
     }
-    public static File unZip(File srcFile,String destDir){
+
+    /**
+     * 解压文件
+     * @param srcFile 源文件
+     * @param destDir 解压目录
+     */
+    public static void unZip(File srcFile,String destDir){
         InputStream inputStream =null;
         try{
             ZipFile zipFile = new ZipFile(srcFile);
@@ -67,10 +79,15 @@ public class ZipUtil {
                 e.printStackTrace();
             }
         }
-
-        return null;
     }
 
+    /**
+     * 压缩文件实现
+     * @param file 源文件
+     * @param zipOutputStream 压缩后文件流
+     * @param pathName 当前目录
+     * @throws IOException
+     */
     private static void compress(File file,ZipOutputStream zipOutputStream,String pathName) throws IOException {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -91,34 +108,6 @@ public class ZipUtil {
                     zipOutputStream.write(bufer,0,len);
                 }
                 zipOutputStream.closeEntry();
-            }
-        }
-    }
-    public static void decompression(String filePath, String targetStr) {
-        File source = new File(filePath);
-        if (source.exists()) {
-            ZipInputStream zis = null;
-            BufferedOutputStream bos = null;
-            try {
-                zis = new ZipInputStream(new FileInputStream(source));
-                ZipEntry entry = null;
-                while ((entry = zis.getNextEntry()) != null && !entry.isDirectory()) {
-                    File target = new File(targetStr, entry.getName());
-                    if (!target.getParentFile().exists()) {
-                        target.getParentFile().mkdirs();
-                    }
-                    bos = new BufferedOutputStream(new FileOutputStream(target));
-                    int read = 0;
-                    byte[] buffer = new byte[1024 * 10];
-                    while ((read = zis.read(buffer, 0, buffer.length)) != -1) {
-                        bos.write(buffer, 0, read);
-                    }
-                    bos.flush();
-                }
-                zis.closeEntry();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
             }
         }
     }

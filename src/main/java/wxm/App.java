@@ -6,7 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import wxm.file.FileService;
+
+import java.io.IOException;
 
 public class App extends Application {
 
@@ -15,9 +16,13 @@ public class App extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage){
         Parent root = null;
-        root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+        try {
+            root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("ALMing");
