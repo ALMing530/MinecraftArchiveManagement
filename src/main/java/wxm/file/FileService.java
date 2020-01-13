@@ -2,7 +2,6 @@ package wxm.file;
 
 
 import com.alibaba.fastjson.JSON;
-import javafx.scene.control.TextArea;
 import wxm.entity.Params;
 import wxm.net.BIOUploader;
 import wxm.net.NIOUploader;
@@ -12,6 +11,7 @@ import wxm.viewctrl.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,21 +37,23 @@ public class FileService {
     public FileService() {
     }
 
-    public FileService(NIOUploader nioUploader,Console console) {
+    public FileService(NIOUploader nioUploader, Console console) {
         this.nioUploader = nioUploader;
         this.console = console;
     }
 
-    public FileService(BIOUploader bioUploader,Console console) {
+    public FileService(BIOUploader bioUploader, Console console) {
         this.bioUploader = bioUploader;
         this.console = console;
     }
 
     public void send(File file) {
+        console.consoleAppend("压缩存档中....");
         File zipFile = ZipUtil.zip(file);
         String name = file.getName();
         String type = file.isDirectory() ? "Directory" : "file";
         String time = dateFormater.format(new Date());
+        assert zipFile != null;
         long length = zipFile.length();
         System.out.println(length);
         Params params = new Params();
@@ -61,17 +63,29 @@ public class FileService {
                 .addParams("time", time)
                 .addParams("length", length)
                 .generate();
-        console.consoleAppend("生成参数："+param);
+        console.consoleAppend("生成参数：" + param);
         byte[] binaryParam = param.getBytes();
         int paramLength = binaryParam.length;
         byte[] bytes = intToBytes(paramLength);
         byte[] cmd = {0, 0, 0, 1};
-        ByteBuffer byteButter1 = ByteBuffer.allocate(4);
-        ByteBuffer byteButter2 = ByteBuffer.allocate(4096);
+//        ByteBuffer byteButter1 = ByteBuffer.allocate(4);
+//        ByteBuffer byteButter2 = ByteBuffer.allocate(4096);
         bioUploader.uploade(cmd);
         bioUploader.uploade(bytes);
         bioUploader.uploade(binaryParam);
         bioUploader.uploade(zipFile);
+        InputStream readBack;
+        try {
+            readBack = bioUploader.getSocket().getInputStream();
+            byte[] buf = new byte[3];
+            int readLen;
+            if ((readLen = readBack.read(buf)) > 0) {
+                String s = new String(buf, 0, readLen);
+                System.out.println(s);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 //        byteButter1.put(bytes);
 //        byteButter2.put(binaryParam);
@@ -93,11 +107,12 @@ public class FileService {
         String paramsStr = new String(paramsBytes);
         HashMap params = JSON.parseObject(paramsStr, HashMap.class);
         System.out.println(params);
-        Integer fileLenStr = (Integer) params.get("length");
-        int fileLength = fileLenStr;
+        Integer fileLength = (Integer) params.get("length");
         File relative = new File(".");
         String zipDir = relative.getAbsoluteFile().getParent() + File.separator + "tempzip/";
         String filename = ((String) params.get("name")).split("\\.")[0];
+        console.consoleAppend("存档名：" + filename);
+        console.consoleAppend("压缩后存档大小：" + fileLength);
         File zip = new File(zipDir + filename + ".zip");
         if (!zip.getParentFile().exists()) {
             zip.getParentFile().mkdirs();
@@ -120,14 +135,15 @@ public class FileService {
             fileOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
+                assert fileOutputStream != null;
                 fileOutputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        ZipUtil.unZip(zip,minecraftArchiveDir);
+        ZipUtil.unZip(zip, minecraftArchiveDir);
     }
 
     private byte[] intToBytes(int len) {

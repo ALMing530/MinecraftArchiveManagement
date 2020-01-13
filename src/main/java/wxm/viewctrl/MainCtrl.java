@@ -20,15 +20,14 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
- *
  * 功能描述:
+ *
  * @Description 主界面控制器
  * @ClassName MainCtrl
  * @auther: ALMing
  * @date: 2019/11/25 11:33
-
- *
  */
 public class MainCtrl implements Controller {
     //    static Logger logger = Logger.getLogger(MainCtrl.class);
@@ -70,15 +69,18 @@ public class MainCtrl implements Controller {
 
     private Alert loginFrame;
 
+    private Console consoleController;
+
 
     @FXML
     public void initialize() {
+        consoleController = new Console(this.console);
         File file = new File(minecraftArchiveDir);
         alert = new Alert(Alert.AlertType.INFORMATION);
         dirTooltip = new Tooltip();
         bioUploader = new BIOUploader();
         nioUploader = new NIOUploader();
-        fileService = new FileService(bioUploader,new Console(this.console));
+        fileService = new FileService(bioUploader, consoleController);
         serverIp.setText("127.0.0.1");
         serverPort.setText("53055");
         String currentArchivePath = file.getAbsolutePath();
@@ -115,10 +117,16 @@ public class MainCtrl implements Controller {
             bioUploader.connect();
             if (!bioUploader.isClosed()) {
                 if (needAuth(bioUploader)) {
+                    consoleController.consoleAppend("连接成功，正在鉴权");
                     if (!auth(bioUploader)) {
                         bioUploader.disconnect();
+                        consoleController.consoleAppend("鉴权失败");
                         return;
+                    } else {
+                        consoleController.consoleAppend("鉴权成功，以与服务器建立连接");
                     }
+                } else {
+                    consoleController.consoleAppend("连接成功！不需要鉴权");
                 }
                 serverIp.setDisable(true);
                 serverPort.setDisable(true);
@@ -139,7 +147,7 @@ public class MainCtrl implements Controller {
 
     @FXML
     void syncFromServer(ActionEvent event) {
-        System.out.println("DDD");
+        consoleController.consoleAppend("开始从服务器拉取存档");
         new Thread(new Task() {
             @Override
             protected Object call() throws Exception {
@@ -162,7 +170,7 @@ public class MainCtrl implements Controller {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                        return null;
+                    return null;
                 }
             }).start();
         } else {
@@ -207,7 +215,7 @@ public class MainCtrl implements Controller {
     public boolean auth(BIOUploader bioUploader) {
         boolean success = false;
         Dialog<Pair<String, String>> dialog = new Dialog<>();
-        Stage stage = (Stage)dialog.getDialogPane().getScene().getWindow();
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image("/icon/auth.png"));
         dialog.setTitle("登陆");
         dialog.setHeaderText("服务器要求你验证身份");

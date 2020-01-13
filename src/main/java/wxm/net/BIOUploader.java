@@ -50,13 +50,13 @@ public class BIOUploader {
                 writer.write(buffer,0,len);
             }
             writer.flush();
-            InputStream readBack = socket.getInputStream();
-            byte[] bytes = new byte[1024];
-            int readLen = 0;
-            while ((readLen=readBack.read(bytes))>0){
-                String s = new String(bytes,0,readLen);
-                System.out.println(s);
-            }
+//            InputStream readBack = socket.getInputStream();
+//            byte[] bytes = new byte[1024];
+//            int readLen = 0;
+//            while ((readLen=readBack.read(bytes))>0){
+//                String s = new String(bytes,0,readLen);
+//                System.out.println(s);
+//            }
         } catch (IOException e) {
             logger.debug("Uploade fail");
         }finally {
